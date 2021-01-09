@@ -19,6 +19,17 @@ if __name__ == '__main__':
     # print(wtbest100b)
 
     test_problem = SMTWTproblem(data40, 0)
+
+    test_problem2 = SMTWTproblem(data100, 40)
     print("The processing_time of job number 3 (starting from 0) of the problem 0 is:")
     print(test_problem.jobs[3].processing_time)
+    print("#####################")
+    for job in test_problem2.jobs:
+        print(job)
+    print("#####################")
+    for job in test_problem2.sorted_jobs:
+        print(job)
+
+
+
 

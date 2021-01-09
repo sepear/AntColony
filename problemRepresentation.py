@@ -1,3 +1,7 @@
+import numpy as np
+from problemSolving import *
+
+
 class Job:
     def __init__(self, processing_time, due_date, weight):
         # Those 3 atributes are given
@@ -8,14 +12,15 @@ class Job:
         # self.completition_time = completition_time
         # self.tardiness = self.getTardiness()
 
-    # def getTardiness(self):
-    #    return self.weight * max(0, self.completition_time - self.due_date)
+    def __str__(self):
+        return f"proc_time:{self.processing_time},due_date:{self.due_date},weight:{self.weight}"
 
 
 class SMTWTproblem:
-    def __init__(self, problems, index):  # receives a data about problems and
+    def __init__(self, problems, index):
+        # receives a data about problems,
+        # number of ants (M)
         # an index that indicates the problem to build
-
         if index < 0 or index >= 125:
             raise ValueError('index must be: 0>=index<125')
 
@@ -27,8 +32,26 @@ class SMTWTproblem:
             weight = problems['weight'][index][i]
             self.jobs.append(Job(processing_time, due_date, weight))
 
-    #def getTotalTardiness(self):
-    #    total_tardiness = 0  # summation stored here
-    #    for job in self.jobs:
-    #        total_tardiness += job.getTardiness()
-    #    return total_tardiness
+        self.n_jobs = len(self.jobs)
+        # we initialize pheromones to 0#ASI NO SE INICIALIZA, SE USA T0
+
+        self.TDD = self.calculateTEDD()
+        self.tau_0 = 1 / (m * self.TDD)
+
+        # we initialize pheromones using tau_0
+        self.pheromones = [np.repeat(self.tau_0, self.n_jobs) for _ in range(self.n_jobs)]
+
+    def calculateTEDD(self):
+        # TEDD is the total tardiness of the schedule that is
+        # obtained when the jobs are ordered according to the Earliest Deadline First heuristic
+
+        sorted_jobs = sorted(self.jobs, key=lambda x: x.due_date)
+
+        actual_time = 0
+        total_tardiness = 0  # TODO: NO ESTOY HACIENDO EL WEIGHTED (AUNQUE NO LO DICE), EN UN FUTURO QUIZÁ PROBARLO
+
+        for job in sorted_jobs:
+            total_tardiness += max(0, actual_time - job.due_date)
+            actual_time += job.processing_time
+
+        return total_tardiness
