@@ -56,22 +56,37 @@ def generateRoute(problem):#genera la ruta de una hormiga
         best_index=0
         best_value=0
         for job_index in S:
-
-            value= (np.sum(problem.pheromones[job_index]))^alpha \
-            *(calculateHeuristicValue(T, problem.jobs[job_index]))
-
+            sumtkj = np.sum(problem.pheromones[job_index])
+            nkj = (calculateHeuristicValue(T, problem.jobs[job_index]))
+            value = (sumtkj**alpha) * (nkj**beta)
+            
             if value>best_value:
                 best_index = job_index
                 best_value = value
 
         next_job=best_index #EN ESTE PUNTO SE TOMA EL TRABAJO BEST_INDEX
-
+        
     else:#camino B)
 
+        pj = [] # probabilidad de j
+        for job_index in S:
+            sumtkj = np.sum(problem.pheromones[job_index]) # same 
+            nij = (calculateHeuristicValue(T, problem.jobs[job_index]))
+            denominador = np.sum((np.sum(problem.pheromones[h])**alpha)*(calculateHeuristicValue(T, problem.jobs[h])**beta) for h in S)
+            
+            pj.append(((sumtkj**alpha) * (nij**beta))/denominador)
+        #
+        # HAY QUE TIRAR EL RANDOM DE PJ AQUÍ 
+        #   
+        next_job=0 #el ganador del random
+        
+    
         #AQUÍ SE ESCOJE PROBABILISTICAMENTE EL SIGUIENTE TRABAJO, MIRAR FUERTE LO DE ABAJO
         #https: // docs.scipy.org / doc / numpy - 1.13.0 / reference / generated / numpy.random.choice.html
         #TODO: AQUÍ TENGO QUE CALCULAR EL SIGUIENTE CON LAS PROBABILIDADES
-
-
+    
+    T = T + problem.jobs[next_job].processing_time # Updating T adding the selected job processing time 
+    S.remove(next_job) # eliminamos la tarea escogida
+    print(next_job) # tarea escogida
     #TODO:MIRAR LA ACTUALIZACIÓN DE LA FEROMONA MAS EN PROFUNDIDAD
 #una hormiga usa información heuristica e información de feromona para construir su solución

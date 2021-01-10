@@ -40,17 +40,18 @@ class SMTWTproblem:
 
         # we initialize pheromones using tau_0
         self.pheromones = [np.repeat(self.tau_0, self.n_jobs) for _ in range(self.n_jobs)]
+        
 
     def calculateTEDD(self):
         # TEDD is the total tardiness of the schedule that is
         # obtained when the jobs are ordered according to the Earliest Deadline First heuristic
 
-        sorted_jobs = sorted(self.jobs, key=lambda x: x.due_date)
+        self.sorted_jobs = sorted(self.jobs, key=lambda x: x.due_date)
 
         actual_time = 0
         total_tardiness = 0  # TODO: NO ESTOY HACIENDO EL WEIGHTED (AUNQUE NO LO DICE), EN UN FUTURO QUIZÁ PROBARLO
 
-        for job in sorted_jobs:
+        for job in self.sorted_jobs:
             total_tardiness += max(0, actual_time - job.due_date)
             actual_time += job.processing_time
 
