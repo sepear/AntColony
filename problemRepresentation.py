@@ -39,6 +39,8 @@ class SMTWTproblem:
         self.tau_0 = 1 / (m * self.TDD)
 
         # we initialize pheromones using tau_0
+        #TODO:esto se puede hacer mas eficiente quitando la lista y haciendo un array full
+
         self.pheromones = [np.repeat(self.tau_0, self.n_jobs) for _ in range(self.n_jobs)]
         
 

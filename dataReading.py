@@ -34,10 +34,10 @@ def readData(file_address):  # used to read data about problems
         n = size * 3
 
         for i in range(0, len(flatten_lines)-1, n):  # start,stop,step
-
+#he cambiado due_date por weight TODO:##########################
             problems['processing_time'].append(flatten_lines[i:i + size])
-            problems['due_date'].append(flatten_lines[i + size:i + size*2])
-            problems['weight'].append(flatten_lines[i + size*2:i + size*3])
+            problems['weight'].append(flatten_lines[i + size:i + size*2])
+            problems['due_date'].append(flatten_lines[i + size*2:i + size*3])
 
             #problems.append([flatten_lines[i:i + size * 3]])
 
