@@ -1,6 +1,6 @@
 from dataReading import readResults, readData
 
-from evaluation import evaluateSet
+from evaluation import evaluateSet, dataWriter
 
 # Press the green button in the gutter to run the script.
 
@@ -16,7 +16,7 @@ if __name__ == '__main__':
     wtbest100a = readResults("data/wtbest100a.txt")
     wtbest100b = readResults("data/wtbest100b.txt")
 
-    best_results, results = evaluateSet(data40,20)
+    best_results, results = evaluateSet(data40, 20)
 
     #test_problem = SMTWTproblem(data40, 124)
 
