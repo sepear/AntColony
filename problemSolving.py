@@ -22,7 +22,6 @@ beta = 1  # relative influence of heuristic value
 p = 0.1  # constant for the pheromone update
 
 
-
 def optSwap_2(route, i, k):  # performs a 2-opt given i and k
     new_route = list()
 
@@ -110,20 +109,22 @@ def generateRoute(problem, local_pheromones):  # genera la ruta de una hormiga
             start1 = time.time()
 
             pj = []  # probabilidad de j
+
+            numerators = {
+                h: ((np.sum(local_pheromones[h]) ** alpha) * (calculateHeuristicValue(T, problem.jobs[h]) ** beta))
+                for h in S}#a dictionary index_numerator
+            denominator = np.sum(list(numerators.values()))
+
             for job_index in S:
-                sumtkj = np.sum(local_pheromones[job_index])  # same
                 nij = (calculateHeuristicValue(T, problem.jobs[job_index]))
-                denominador = np.sum(
-                    (np.sum(local_pheromones[h]) ** alpha) * (calculateHeuristicValue(T, problem.jobs[h]) ** beta)
-                    for h in S)
 
-                pj.append(((sumtkj ** alpha) * (nij ** beta)) / denominador)
-
+                pj.append( numerators[job_index] / denominator)
+            #print(f"suma probabilidades{sum(pj)}")
             next_job = np.random.choice(S, p=pj)  # choice from S using pj probability distribution
 
             end1 = time.time()
             total = end1 - start1
-            # print(f"tiempo camino B: {total}")
+            #print(f"tiempo camino B: {total}")
             # AQUÍ SE ESCOJE PROBABILISTICAMENTE EL SIGUIENTE TRABAJO, MIRAR FUERTE LO DE ABAJO
             # https: // docs.scipy.org / doc / numpy - 1.13.0 / reference / generated / numpy.random.choice.html
 
@@ -132,7 +133,7 @@ def generateRoute(problem, local_pheromones):  # genera la ruta de una hormiga
         local_pheromones[next_job][schedule_position] = (1 - p) * local_pheromones[next_job][schedule_position] \
                                                         + p * problem.tau_0
 
-        #SE HACEN ACTUALIZACIONES LOCALES, GLOBALES SOLO CON LA MEJOR
+        # SE HACEN ACTUALIZACIONES LOCALES, GLOBALES SOLO CON LA MEJOR
 
         T += problem.jobs[next_job].processing_time  # Updating T adding the selected job processing time
         S.remove(next_job)  # eliminamos la tarea escogida
@@ -148,7 +149,7 @@ def generateSolution(problem, generations=500):
 
     evaporation = lambda x: (1 - p) * x
 
-    convergence_list = list()#here we add the best known each generation to see convergence
+    convergence_list = list()  # here we add the best known each generation to see convergence
     for generation in range(generations):  # for every generation:
         print(f"\t\tgeneration:{generation}")
         best_route = []
@@ -168,21 +169,15 @@ def generateSolution(problem, generations=500):
                 best_TWTardiness = TWTardiness
                 best_route = route
 
-
-
-        for ferom_job in problem.pheromones:#Evaporation
+        for ferom_job in problem.pheromones:  # Evaporation
             ferom_job = evaporation(ferom_job)
-
-
 
         best_route, best_TWTardiness = localOpt(problem, best_route, best_TWTardiness)
 
-
-
-        for schedule_position in range(len(best_route)):#Pheromone uptade
+        for schedule_position in range(len(best_route)):  # Pheromone uptade
             actual_job = best_route[schedule_position]
             problem.pheromones[actual_job][schedule_position] = problem.pheromones[actual_job][schedule_position] \
-                                                                + p * (1/best_TWTardiness)
+                                                                + p * (1 / best_TWTardiness)
 
         if best_TWTardiness < absolute_best_TWTardiness:
             absolute_best_TWTardiness = best_TWTardiness

@@ -16,7 +16,7 @@ if __name__ == '__main__':
     wtbest100a = readResults("data/wtbest100a.txt")
     wtbest100b = readResults("data/wtbest100b.txt")
 
-    best_results, results = evaluateSet(data40, 20)
+    best_results, results = evaluateSet(data100, 50)
 
     #test_problem = SMTWTproblem(data40, 124)
 
