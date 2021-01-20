@@ -7,14 +7,11 @@ import time
 N_RUNS = 4  # number of times we evaluate a problem
 
 
-def generatePlot(results,benchmark,dir):
+def generatePlot(results,benchmark, dir):
     plt.clf()
     plt.ylabel('best tardiness obtained')
     plt.xlabel('problem')
-    print(results)
-    print(len(results))
-    print(benchmark)
-    print(len(benchmark))
+
     plt.plot([i for i in range(len(benchmark))], results, label="Our results ")
 
     plt.plot([i for i in range(len(benchmark))], benchmark, label="Benchmark ")
@@ -39,7 +36,7 @@ def evaluateSet(data, generations=500, results_name="default",benchmark_dir="dat
     for problem_index in range(125):  # for every problem:
         print(f"problema: {problem_index}")
         problem_results = list()
-        for run_index in range(4):  # four times
+        for run_index in range(N_RUNS):  # four times
             print(f"\t{run_index}")
 
             problem = SMTWTproblem(data, problem_index)
