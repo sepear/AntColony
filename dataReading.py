@@ -3,8 +3,7 @@ def readResults(file_address):  # used to read a result file (wtop40,wtop50...)
     with open(file_address) as f:
         lines = f.readlines()  # list of lines
         lines.pop(-1)  # we remove the last element as it is empty (only '\n')
-        lines = [s.strip('\n ') for s in lines]  # we remove spaces and line breaks
-
+        lines = [int(s.strip('\n ')) for s in lines]  # we remove spaces and line breaks
     return lines
 
 

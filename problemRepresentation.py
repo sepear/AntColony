@@ -39,7 +39,7 @@ class SMTWTproblem:
         self.tau_0 = 1 / (m * self.TDD)
 
         # we initialize pheromones using tau_0
-        #TODO:esto se puede hacer mas eficiente quitando la lista y haciendo un array full
+
 
         self.pheromones = [np.repeat(self.tau_0, self.n_jobs) for _ in range(self.n_jobs)]
         
@@ -51,10 +51,11 @@ class SMTWTproblem:
         self.sorted_jobs = sorted(self.jobs, key=lambda x: x.due_date)
 
         actual_time = 0
-        total_tardiness = 0  # TODO: NO ESTOY HACIENDO EL WEIGHTED (AUNQUE NO LO DICE), EN UN FUTURO QUIZÁ PROBARLO
+        total_tardiness = 0
 
         for job in self.sorted_jobs:
             total_tardiness += max(0, actual_time - job.due_date)
             actual_time += job.processing_time
 
+        total_tardiness = max(0.00001, total_tardiness)#to avoid division by zero
         return total_tardiness

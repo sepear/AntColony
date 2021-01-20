@@ -14,7 +14,7 @@ import time
 
 m = 20  # number of ants
 
-q0 = 0.4  # parameter for the algorithm; a probability
+q0 = 0.9  # parameter for the algorithm; a probability
 
 alpha = 1  # relative influence of pheromone values
 beta = 1  # relative influence of heuristic value
@@ -65,8 +65,6 @@ def evaluateRoute(problem, route):
 
 
 def calculateHeuristicValue(T, job):
-    # TODO: AQUI TENGO DUDA DE COMO VA LO DE "MULTIPLICAMOS TODO VALOR POR W_j"
-    # DE MOMENTO PUESTO DE FORMA CHAPUZA
 
     heuristic = job.weight * (1 / (max(T + job.processing_time, job.due_date) - T))
 
@@ -177,7 +175,7 @@ def generateSolution(problem, generations=500):
         for schedule_position in range(len(best_route)):  # Pheromone uptade
             actual_job = best_route[schedule_position]
             problem.pheromones[actual_job][schedule_position] = problem.pheromones[actual_job][schedule_position] \
-                                                                + p * (1 / best_TWTardiness)
+                                                                + p * (1 / max(0.00001, best_TWTardiness))
 
         if best_TWTardiness < absolute_best_TWTardiness:
             absolute_best_TWTardiness = best_TWTardiness

@@ -1,17 +1,39 @@
 from dataReading import readResults, readData
 from problemRepresentation import SMTWTproblem
 from problemSolving import generateSolution
-
+import matplotlib.pyplot as plt
 import time
 
 N_RUNS = 4  # number of times we evaluate a problem
 
 
-def generaPlot():
-    pass
+def generatePlot(results,benchmark,dir):
+    plt.clf()
+    plt.ylabel('best tardiness obtained')
+    plt.xlabel('problem')
+    print(results)
+    print(len(results))
+    print(benchmark)
+    print(len(benchmark))
+    plt.plot([i for i in range(len(benchmark))], results, label="Our results ")
+
+    plt.plot([i for i in range(len(benchmark))], benchmark, label="Benchmark ")
+    plt.legend()
+    plt.title("Comparison between our algorithm and benchmark")
+    
+    plt.savefig(dir)
 
 
-def evaluateSet(data, generations=500):
+def compareResults(our_results, given_results):#address of our results, address of results given
+
+    total_sum = sum(our_results)
+    average_difference = (sum(given_results)-total_sum)/(len(given_results)-1)
+    print(f"Average difference:{average_difference}")
+    print(f"Total sum:{total_sum}")
+
+def evaluateSet(data, generations=500, results_name="default",benchmark_dir="data/wtopt40.txt"):
+    filedir = "results/"+results_name+".txt"
+    imagedir ="figures/"+results_name+".png"
     best_results = list()  # list with the best result for every problem
     results = list()  # list of lists of results
     for problem_index in range(125):  # for every problem:
@@ -23,7 +45,6 @@ def evaluateSet(data, generations=500):
             problem = SMTWTproblem(data, problem_index)
             # built inside to reset pheromones
 
-            start = time.time()
 
             tardiness, route = generateSolution(problem, generations)
             print(f"tardiness:{tardiness}")
@@ -31,6 +52,10 @@ def evaluateSet(data, generations=500):
         results.append(problem_results)
         best_results.append(min(problem_results))
 
+    given_results = readResults(benchmark_dir)
+    compareResults(best_results, given_results)
+    dataWriter(best_results, filedir)
+    generatePlot(best_results, given_results, imagedir)
     return best_results, results
 
 
